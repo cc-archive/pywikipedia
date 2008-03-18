@@ -9,6 +9,7 @@ else:
 import glob
 import wikipedia
 import os
+import urllib
 
 def get_page_contents(site, pagename):
     assert type(pagename) == unicode
@@ -30,6 +31,7 @@ def process_directory(site, directory):
     files = glob.glob("*.mw")
     for filename in files:
         pagename = filename[:-len('.mw')]
+        pagename = urllib.unquote(pagename)
         unipagename = unicode(pagename, 'utf-8')
         page = wikipedia.Page(site, unipagename)
         existing_page_contents = get_page_contents(site, unipagename)
