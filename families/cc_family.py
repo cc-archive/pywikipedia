@@ -24,4 +24,6 @@ class Family(family.Family):
     
     def path(self, code):
         return '/index.php' #The path of index.php
-    
+
+    def apipath(self, code):
+        return '/api.php'
