@@ -1,0 +1,7 @@
+These files are not usable alone.
+
+You should first do a checkout of pywikipedia, tested with r5140.
+
+$ http://svn.wikimedia.org/svnroot/pywikipedia/trunk/pywikipedia
+
+Then, symlink the files here in.  Then run them from the pywikipedia checkout.
