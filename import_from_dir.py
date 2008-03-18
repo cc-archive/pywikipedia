@@ -8,6 +8,7 @@ else:
 
 import glob
 import wikipedia
+import os
 
 def get_page_contents(site, pagename):
     assert type(pagename) == unicode
@@ -24,6 +25,8 @@ def main():
     process_directory(site, directory)
 
 def process_directory(site, directory):
+    old_path = os.getcwd()
+    os.chdir(directory)
     files = glob.glob("*.mw")
     for filename in files:
         pagename = filename[:-len('.mw')]
@@ -35,12 +38,13 @@ def process_directory(site, directory):
             page.put(newtext=open(filename).read(),
                      comment='Imported file ' + unipagename + '.mw',
                      minorEdit=False)
-            fd = open(pagename + '.uploaded', 'w')
+            fd = open(filename + '.uploaded', 'w')
             fd.close()
         else:
-            fd = open(pagename + '.online', 'w')
+            fd = open(filename + '.online', 'w')
             fd.write(existing_page_contents)
             fd.close()
+    os.chdir(old_path)
             
 if __name__ == '__main__':
     main()
