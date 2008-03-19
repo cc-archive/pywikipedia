@@ -11,6 +11,7 @@ import os
 assert 'PYWIKIPEDIA_PATH' in os.environ
 sys.path.append(os.environ['PYWIKIPEDIA_PATH'])
 
+import codecs
 import glob
 import wikipedia
 import urllib
@@ -48,7 +49,7 @@ def process_directory(site, directory):
             fd = open(filename + '.uploaded', 'w')
             fd.close()
         else:
-            fd = open(filename + '.online', 'w')
+            fd = codecs.open(filename + '.online', 'w', 'utf-8')
             fd.write(existing_page_contents)
             fd.close()
     os.chdir(old_path)
