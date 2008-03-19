@@ -6,9 +6,13 @@ else:
    Create the page and insert the contents of $pagename.mw into it
    Create a local empty $pagename.mw.uploaded file to record the success'''
 
+import sys
+import os
+assert 'PYWIKIPEDIA_PATH' in os.environ
+sys.path.append(os.environ['PYWIKIPEDIA_PATH'])
+
 import glob
 import wikipedia
-import os
 import urllib
 
 def get_page_contents(site, pagename):
@@ -31,7 +35,8 @@ def process_directory(site, directory):
     files = glob.glob("*.mw")
     for filename in files:
         pagename = filename[:-len('.mw')]
-        pagename = urllib.unquote(pagename)
+        pagename = urllib.unquote_plus(pagename)
+        assert '+' not in pagename
         unipagename = unicode(pagename, 'utf-8')
         page = wikipedia.Page(site, unipagename)
         existing_page_contents = get_page_contents(site, unipagename)
