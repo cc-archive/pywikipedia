@@ -20,19 +20,34 @@ def cd_fix_page(page):
     text = page.get(get_redirect = False)
     if '{{ContentDirectory' in text:
         assert text.count('{{') == 1
-        print 'old', text
-        print 'new', cd_fix_text(text)
-        page.put(cd_fix_text(text), 'Asheesh bot: fixing ContentDirectories to use comma-separated formats')
-        print 'Processed one page.'
-        time.sleep(2)
+        new = my_regex_sub(r'{{ContentDirectory.*?}}', text, cd_fix_text)
+        if text != new:
+            print 'old', text
+            print 'new', new
+            page.put(new, 'Asheesh bot: fixing ContentDirectories to use comma-separated formats')
+            print 'Processed one page.'
+            time.sleep(2)
 
-def cd_fix_text(text):
-    template, rest = text.split('}}', 1) # This assumes that we are the first
-                                         # template in use on the page
-    template += '}}' # put back what we took away...
+def my_regex_sub(regex, instring, function):
+    compiled = re.compile(regex, re.DOTALL)
+    match = compiled.search(instring)
+    if match is None:
+        return instring
+    
+    # So we have a match!
+    before = instring[:match.start()]
+    exciting = instring[match.start():match.end()]
+    after = instring[match.end():]
 
-    assert template.strip().startswith('{{ContentDirectory') # so this
-                                                            # asserts it!
+    # So let's fix up the "exciting" part...
+    new_exciting = function(exciting)
+    if exciting != new_exciting:
+        print "Fixed one."
+    return before + new_exciting + after
+
+def cd_fix_text(template):
+    assert '{{ContentDirectory' in template # so this
+    assert template.count('{{') == 1        # asserts it
 
     lines = template.split('|')
     keep_lines = []
@@ -51,11 +66,10 @@ def cd_fix_text(text):
         print keep_lines
         keep_lines.insert(1, 'format=' + ','.join(formats))
         fixed_template = '|'.join(keep_lines)
-        if '}}' not in fixed_template:
-            fixed_template += '}}'
-        return fixed_template + rest
+        assert fixed_template.endswith('}}')
+        return fixed_template
     else:
-        return text # Nothing to do
+        return template # Nothing to do
 
 def update_contentdirectory_template():
     category_name = 'Content_Directory'
