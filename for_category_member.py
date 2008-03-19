@@ -24,12 +24,15 @@ def cd_fix_page(page):
         print 'new', cd_fix_text(text)
         page.put(cd_fix_text(text), 'Asheesh bot: fixing ContentDirectories to use comma-separated formats')
         print 'Processed one page.'
-        time.sleep(2000)
+        time.sleep(2)
 
 def cd_fix_text(text):
-    template, rest = text.split('}}') # This asserts that there is only one
-                                      # template in use on the page
+    template, rest = text.split('}}', 1) # This assumes that we are the first
+                                         # template in use on the page
     template += '}}' # put back what we took away...
+
+    assert template.strip().startswith('{{ContentDirectory') # so this
+                                                            # asserts it!
 
     lines = template.split('|')
     keep_lines = []
