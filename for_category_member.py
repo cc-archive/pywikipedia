@@ -1,3 +1,8 @@
+import sys
+import os
+assert 'PYWIKIPEDIA_PATH' in os.environ
+sys.path.append(os.environ['PYWIKIPEDIA_PATH'])
+
 import wikipedia
 import catlib
 import pagegenerators
