@@ -2,6 +2,7 @@ import wikipedia
 import catlib
 import pagegenerators
 import re
+import time
 
 def for_category_member(category_name, function):
     site = wikipedia.getSite()
@@ -14,8 +15,11 @@ def cd_fix_page(page):
     text = page.get(get_redirect = False)
     if '{{ContentDirectory' in text:
         assert text.count('{{') == 1
+        print 'old', text
+        print 'new', cd_fix_text(text)
         page.put(cd_fix_text(text), 'Asheesh bot: fixing ContentDirectories to use comma-separated formats')
         print 'Processed one page.'
+        time.sleep(2000)
 
 def cd_fix_text(text):
     template, rest = text.split('}}') # This asserts that there is only one
@@ -28,6 +32,7 @@ def cd_fix_text(text):
     for line in lines:
         if re.search('format\d=', line):
             this_format = line.split('=')[1].strip()
+            this_format = this_format.replace('}}', '').strip()
             if this_format:
                 formats.append(this_format)
         else:
@@ -35,9 +40,12 @@ def cd_fix_text(text):
     # Great!
     if formats: # if the list has any entries,
                 # we actually have to insert a fresh 'format=' line
-        keep_lines.insert(-1, '\n  format=' + ','.join(formats))
+        print keep_lines
+        keep_lines.insert(1, 'format=' + ','.join(formats))
         fixed_template = '|'.join(keep_lines)
-        return fixed_template
+        if '}}' not in fixed_template:
+            fixed_template += '}}'
+        return fixed_template + rest
     else:
         return text # Nothing to do
 
