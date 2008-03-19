@@ -10,6 +10,13 @@ def for_category_member(category_name, function):
     for page in gen:
         function(page)
 
+def cd_fix_page(page):
+    text = page.get(get_redirect = False)
+    if '{{ContentDirectory' in text:
+        assert text.count('{{') == 1
+        page.put(cd_fix_text(text), 'Asheesh bot: fixing ContentDirectories to use comma-separated formats')
+        print 'Processed one page.'
+
 def cd_fix_text(text):
     template, rest = text.split('}}') # This asserts that there is only one
                                       # template in use on the page
@@ -36,4 +43,4 @@ def cd_fix_text(text):
 
 def update_contentdirectory_template():
     category_name = 'Content_Directory'
-    for_category_member
+    for_category_member(category_name, cd_fix_page)
