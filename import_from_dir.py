@@ -35,6 +35,9 @@ def process_directory(site, directory):
     os.chdir(directory)
     files = glob.glob("*.mw")
     for filename in files:
+        if os.path.exists(filename + '.uploaded'):
+            print 'Skipping', filename
+            continue # We already uploaded this before
         pagename = filename[:-len('.mw')]
         pagename = urllib.unquote_plus(pagename)
         assert '+' not in pagename
@@ -43,7 +46,7 @@ def process_directory(site, directory):
         existing_page_contents = get_page_contents(site, unipagename)
         if existing_page_contents is None:
             # Great!
-            page.put(newtext=open(filename).read(),
+            page.put(newtext=codecs.open(filename, 'r', 'utf-8').read(),
                      comment='Imported file ' + unipagename + '.mw',
                      minorEdit=False)
             fd = open(filename + '.uploaded', 'w')
