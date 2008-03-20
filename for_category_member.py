@@ -19,7 +19,6 @@ def for_category_member(category_name, function):
 def cd_fix_page(page):
     text = page.get(get_redirect = False)
     if '{{ContentDirectory' in text:
-        assert text.count('{{') == 1
         new = my_regex_sub(r'{{ContentDirectory.*?}}', text, cd_fix_text)
         if text != new:
             print 'old', text
@@ -66,7 +65,9 @@ def cd_fix_text(template):
         print keep_lines
         keep_lines.insert(1, 'format=' + ','.join(formats))
         fixed_template = '|'.join(keep_lines)
-        assert fixed_template.endswith('}}')
+        if not fixed_template.endswith('}}'):
+            assert '}}' not in fixed_template
+            fixed_template += '}}'
         return fixed_template
     else:
         return template # Nothing to do
