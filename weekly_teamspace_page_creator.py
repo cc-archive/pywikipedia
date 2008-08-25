@@ -2,10 +2,12 @@ import import_from_dir
 import wikipedia
 import datetime
 import urllib
+import smtplib
+import email.mime.text
 
 PAGE_NAME_FORMAT='Staff_updates_%Y-%m-%d'
 
-def create_page(site, weekday_that_today_should_be=1, dry_run = False):
+def create_page(site, dry_run = False):
     # This runs in the morning.
     wednesday = next_wednesday()
 
@@ -62,11 +64,31 @@ def get_this_weeks_staff_call_page(site):
     page_name = unicode(wednesday.strftime(PAGE_NAME_FORMAT))
     return import_from_dir.get_page_contents(site, page_name)
 
+def send_to_staff_list(subject, body, dry_run = False):
+    msg = email.mime.text.MIMEText(body)
+    msg.add_header('Subject', subject)
+    
+    SERVER='localhost'
+    FROM='"Mr. Staff Call" <asheesh@creativecommons.org>'
+    if dry_run:
+        TO = ['asheesh@creativecommons.org']
+    else:
+        TO = ['cc-staff@lists.ibiblio.org']
+
+    msg.add_header('To', TO[0])
+
+    s = smtplib.SMTP()
+    s.connect(SERVER)
+    s.sendmail(FROM, TO, msg.as_string())
+    s.close()
+
 def main(argv):
     site = wikipedia.getSite()
     if argv[0] == 'ask_people_to_fill_in_page':
-        page_name = create_page(site, 0, dry_run = True)
+        page_name = create_page(site, dry_run = True)
         body = generate_email(page_name)
+        send_to_staff_list(subject=next_wednesday().strftime('Fill in your updates for staff call on Wed %Y-%m-%d'),
+                           body=body, dry_run = True)
         print body
     elif argv[0] == 'send_weekly_status_updates':
         body = get_this_weeks_staff_call_page(site)
