@@ -43,8 +43,13 @@ def generate_email(page_name):
 
 This week's staff updates are growing at <%s>.
 
-You should add yours <%s>.  Note that at lunchtime Pacific this Tuesday,
-that page will be automatically emailed to cc-staff - so act fast!
+You should add yours <%s>.
+Note that at lunchtime Pacific this Tuesday, that page will be
+automatically emailed to cc-staff - so act fast!
+
+(That edit link takes you to an "add section" interface - just make a new section
+with your name as the "Subject/headline", and fill in your updates as usual in the
+main box.  Once you save, you can edit the page normally.)
 
 Yours truly,
 
@@ -85,14 +90,14 @@ def send_to_staff_list(subject, body, dry_run = False):
 def main(argv):
     site = wikipedia.getSite()
     if argv[0] == 'ask_people_to_fill_in_page':
-        page_name = create_page(site, dry_run = True)
+        page_name = create_page(site)
         body = generate_email(page_name)
         send_to_staff_list(subject=next_wednesday().strftime('Fill in your updates for staff call on Wed %Y-%m-%d'),
-                           body=body, dry_run = True)
-        print body
+                           body=body)
     elif argv[0] == 'send_weekly_status_updates':
         body = get_this_weeks_staff_call_page(site)
-        print body
+        send_to_staff_list(subject=next_wednesday().strftime("Staff updates for call on Wed %Y-%m-%d"),
+                           body=body)
 
 if __name__ == '__main__':
     import sys
