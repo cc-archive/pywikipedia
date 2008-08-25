@@ -7,12 +7,10 @@ PAGE_NAME_FORMAT='Staff_updates_%Y-%m-%d'
 
 def create_page(site, weekday_that_today_should_be=1, dry_run = False):
     # This runs in the morning.
-    today = datetime.date.today()
-    assert (today.weekday() == weekday_that_today_should_be) # 1 is Tuesday
-    tomorrow = today + datetime.timedelta(days=1)
+    wednesday = next_wednesday()
 
-    page_name = unicode(tomorrow.strftime(PAGE_NAME_FORMAT))
-    page_contents = unicode(today.strftime('Updates for the week ending %Y-%m-%d'))
+    page_name = unicode(wednesday.strftime(PAGE_NAME_FORMAT))
+    page_contents = unicode(wednesday.strftime('Updates for the staff call on %Y-%m-%d'))
     
     assert import_from_dir.get_page_contents(site, page_name) is None
     page = wikipedia.Page(site, page_name)
@@ -28,12 +26,22 @@ def create_page(site, weekday_that_today_should_be=1, dry_run = False):
 
     return page_name
 
+def next_wednesday(today = datetime.date.today()):
+        # This runs in the morning.
+    today = datetime.date.today()
+    # Spin until we see a Wednesday (day==2)
+    wednesday = today
+    while wednesday.weekday() != 2:
+        wednesday += datetime.timedelta(days=1)
+    return wednesday
+
+
 def generate_email(page_name):
     msg = '''Dear CC Staff,
 
-This week's staff updates are growing <%s>.
+This week's staff updates are growing at <%s>.
 
-You should add yours <%s>.  Note that at the end of Tuesday,
+You should add yours <%s>.  Note that at lunchtime Pacific this Tuesday,
 that page will be automatically emailed to cc-staff - so act fast!
 
 Yours truly,
@@ -50,13 +58,7 @@ CC Staff Call Bot.
 
 def get_this_weeks_staff_call_page(site):
     # This runs in the morning.
-    today = datetime.date.today()
-    # Spin until we see a Wednesday (day==2)
-    wednesday = today
-    while wednesday.weekday() != 2:
-        wednesday += datetime.timedelta(days=1)
-
-    # Great, Wednesday.
+    wednesday = next_wednesday()
     page_name = wednesday.strftime(PAGE_NAME_FORMAT)
     return import_from_dir.get_page_contents(site, page_name)
 
