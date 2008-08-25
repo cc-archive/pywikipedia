@@ -59,7 +59,7 @@ CC Staff Call Bot.
 def get_this_weeks_staff_call_page(site):
     # This runs in the morning.
     wednesday = next_wednesday()
-    page_name = wednesday.strftime(PAGE_NAME_FORMAT)
+    page_name = unicode(wednesday.strftime(PAGE_NAME_FORMAT))
     return import_from_dir.get_page_contents(site, page_name)
 
 def main(argv):
