@@ -25,9 +25,9 @@ def create_page(site, weekday_that_today_should_be=1):
 def generate_email(page_name):
     msg = '''Dear CC Staff,
 
-This week's staff updates are growing at %s.
+This week's staff updates are growing <%s>.
 
-You should add yours at %s.  Note that at the end of Tuesday,
+You should add yours <%s>.  Note that at the end of Tuesday,
 that page will be automatically emailed to cc-staff - so act fast!
 
 Yours truly,
