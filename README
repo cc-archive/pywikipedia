@@ -6,7 +6,7 @@ $ http://svn.wikimedia.org/svnroot/pywikipedia/trunk/pywikipedia
 
 Then, symlink the families entry in.
 
-Then, take user-config.py.templ and modify it into user-config.py.  Symlink
+Then, take user-config.py.templ and modify it into user-config.py.  MOVE (not symlink)
 that into the pywikipedia directory also.
 
 Then:
