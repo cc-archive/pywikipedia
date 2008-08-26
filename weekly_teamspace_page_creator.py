@@ -5,7 +5,7 @@ import urllib
 import smtplib
 import email.mime.text
 
-PAGE_NAME_FORMAT='Staff_updates_%Y-%m-%d'
+PAGE_NAME_FORMAT='Weekly_Staff_Call/%Y-%m-%d'
 
 def create_page(site, dry_run = False):
     # This runs in the morning.
