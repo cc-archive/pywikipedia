@@ -29,7 +29,7 @@ def create_page(site, dry_run = False):
     return page_name
 
 def next_wednesday(today = datetime.date.today()):
-        # This runs in the morning.
+    # This runs in the morning.
     today = datetime.date.today()
     # Spin until we see a Wednesday (day==2)
     wednesday = today
