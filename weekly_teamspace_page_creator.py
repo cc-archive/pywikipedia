@@ -87,6 +87,26 @@ def send_to_staff_list(subject, body, dry_run = False):
     s.sendmail(FROM, TO, msg.as_string())
     s.close()
 
+    # Time to make cc-staff a watcher of the page
+    # Assumption: Our email address is cc-staff!
+    # Edit the page with its text staying the same,
+    # but in the put() set watchArticle=True.
+
+    page = wikipedia.Page(site, page_name)
+    page_contents = page.get(force=True)
+
+    if dry_run:
+        print 'Would have put this:'
+        print page_contents
+    else:
+        # Note: This is deliciously racey, since MW has no sense of locking or atomic transactions.  Oh well.
+        page.put(newtext=page_contents,
+                 comment = 'Just setting ourselves as a watcher.',
+                 minorEdit = False, watchArticle = True)
+
+    return page_name
+    
+
 def main(argv):
     site = wikipedia.getSite()
     if argv[0] == 'ask_people_to_fill_in_page':
