@@ -86,8 +86,6 @@ def send_to_staff_list(subject, body, dry_run = False):
     s.connect(SERVER)
     s.sendmail(FROM, TO, msg.as_string())
     s.close()
-
-    return page_name
     
 
 def main(argv):
