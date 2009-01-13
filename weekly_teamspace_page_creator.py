@@ -3,6 +3,7 @@ import wikipedia
 import datetime
 import urllib
 import smtplib
+import email.Charset
 import email.mime.text
 
 PAGE_NAME_FORMAT='Weekly_Staff_Call/%Y-%m-%d'
@@ -70,7 +71,22 @@ def get_this_weeks_staff_call_page(site):
     return import_from_dir.get_page_contents(site, page_name)
 
 def send_to_staff_list(subject, body, dry_run = False):
-    msg = email.mime.text.MIMEText(body)
+    # Create a UTF-8 quoted printable encoder
+    charset = email.charset.Charset('utf-8')
+    charset.header_encoding = email.charset.QP
+    charset.body_encoding = email.charset.QP
+
+    # Jam the data into msg, as binary utf-8
+    msg = email.mime.text.MIMEText(body, 'plain')
+
+    # Message class computes the wrong type from MIMEText constructor,
+    # which does not take a Charset object as initializer. Reset the
+    # encoding type to force a new, valid evaluation
+    del msg['Content-Transfer-Encoding']
+    msg.set_charset(charset) 
+    print msg
+    msg.set_param('format', 'flowed')
+
     msg.add_header('Subject', subject)
     
     SERVER='localhost'
