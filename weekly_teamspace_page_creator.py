@@ -6,21 +6,22 @@ import smtplib
 import email.Charset
 import email.mime.text
 import staff
+import os
 
 PAGE_NAME_FORMAT='Weekly_Staff_Call/%Y-%m-%d'
 
-def new_page_contents(date):
+def new_page_contents(wednesday):
     # The easy static part up top.
     page_contents = unicode(wednesday.strftime('Updates for the staff call on %Y-%m-%d')) + '\n\n'
 
     # Interfacing with staff.py.
-#    assert os.path.exists('not-on-call')
-#    assert os.path.exists('phone-number-list')
+    assert os.path.exists('not-on-call')
+    assert os.path.exists('phone-number-list')
 
-#    everyone = staff.list_all_staff(['Staff', 'Science Commons', 'Berlin Office', 'ccLearn']))
-#    randomized = staff.randomize_staff(everyone)
-#    formatted = staff.format_random_lists(randomized)
-#    page_contents += formatted
+    everyone = staff.list_all_staff(['Staff', 'Science Commons', 'Berlin Office', 'ccLearn'])
+    randomized = staff.randomize_staff(everyone)
+    formatted = staff.format_random_lists(randomized)
+    page_contents += formatted
     return page_contents
 
 def create_page(site, dry_run = True, today = None):
@@ -33,6 +34,7 @@ def create_page(site, dry_run = True, today = None):
     
     assert import_from_dir.get_page_contents(site, page_name) is None
     page = wikipedia.Page(site, page_name)
+    page_contents = new_page_contents(wednesday)
 
     if dry_run:
         print 'Would have put this:'
@@ -122,9 +124,9 @@ def main(argv):
     site = wikipedia.getSite()
     if argv[0] == 'ask_people_to_fill_in_page':
         page_name = create_page(site)
-        body = generate_email(page_name)
-        send_to_staff_list(subject=next_wednesday().strftime('Fill in your updates for staff call on Wed %Y-%m-%d'),
-                           body=body)
+        #body = generate_email(page_name)
+        #send_to_staff_list(subject=next_wednesday().strftime('Fill in your updates for staff call on Wed %Y-%m-%d'),
+        #                   body=body)
     elif argv[0] == 'send_weekly_status_updates':
         body = get_this_weeks_staff_call_page(site)
         send_to_staff_list(subject=next_wednesday().strftime("Staff updates for call on Wed %Y-%m-%d"),
