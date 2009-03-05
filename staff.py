@@ -30,8 +30,9 @@ def randomize_staff(everyone, n_groups=4, not_on_call_list = None):
 
     just_call_people = [k for k in everyone if k not in not_on_call_list]
     groups = [ [] for k in range(n_groups) ]
-    for person in just_call_people:
-        groups[random.randrange(n_groups)].append(person)
+    random.shuffle(just_call_people)
+    for i, person in enumerate(just_call_people):
+        groups[i%n_groups].append(person)
 
     return groups
 
