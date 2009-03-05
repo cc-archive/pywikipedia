@@ -24,7 +24,7 @@ def new_page_contents(wednesday):
     page_contents += formatted
     return page_contents
 
-def create_page(site, dry_run = True, today = None):
+def create_page(site, today = None, dry_run = False):
     # This runs on Monday morning.
     if today is None:
         today = datetime.date.today()
@@ -86,7 +86,7 @@ def get_this_weeks_staff_call_page(site):
     page_name = unicode(wednesday.strftime(PAGE_NAME_FORMAT))
     return import_from_dir.get_page_contents(site, page_name)
 
-def send_to_staff_list(subject, body, dry_run = False):
+def send_to_staff_list(subject, body, dry_run = True):
     # Create a UTF-8 quoted printable encoder
     charset = email.charset.Charset('utf-8')
     charset.header_encoding = email.charset.QP
@@ -123,10 +123,18 @@ def send_to_staff_list(subject, body, dry_run = False):
 def main(argv):
     site = wikipedia.getSite()
     if argv[0] == 'ask_people_to_fill_in_page':
-        page_name = create_page(site)
-        #body = generate_email(page_name)
-        #send_to_staff_list(subject=next_wednesday().strftime('Fill in your updates for staff call on Wed %Y-%m-%d'),
-        #                   body=body)
+        # This creates the page for the Wednesday ca. 9d in the future
+        today = datetime.date.today()
+        next_week = today # + datetime.timedelta(days=7)
+        create_page(site, today=next_week) # Create next week's page.
+
+        # Last week, Jen or Ani could have gone and deleted this week's page.
+        # For now, we assume there is no way to cancel a staff call. FIXME.
+        page_name = unicode(next_wednesday(today).strftime(PAGE_NAME_FORMAT))
+
+        body = generate_email(page_name)
+        send_to_staff_list(subject=next_wednesday(today).strftime('Fill in your updates for staff call on Wed %Y-%m-%d'),
+                           body=body)
     elif argv[0] == 'send_weekly_status_updates':
         body = get_this_weeks_staff_call_page(site)
         send_to_staff_list(subject=next_wednesday().strftime("Staff updates for call on Wed %Y-%m-%d"),
