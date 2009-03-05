@@ -5,15 +5,31 @@ import urllib
 import smtplib
 import email.Charset
 import email.mime.text
+import staff
 
 PAGE_NAME_FORMAT='Weekly_Staff_Call/%Y-%m-%d'
 
-def create_page(site, dry_run = False):
-    # This runs in the morning.
-    wednesday = next_wednesday()
+def new_page_contents(date):
+    # The easy static part up top.
+    page_contents = unicode(wednesday.strftime('Updates for the staff call on %Y-%m-%d')) + '\n\n'
+
+    # Interfacing with staff.py.
+#    assert os.path.exists('not-on-call')
+#    assert os.path.exists('phone-number-list')
+
+#    everyone = staff.list_all_staff(['Staff', 'Science Commons', 'Berlin Office', 'ccLearn']))
+#    randomized = staff.randomize_staff(everyone)
+#    formatted = staff.format_random_lists(randomized)
+#    page_contents += formatted
+    return page_contents
+
+def create_page(site, dry_run = True, today = None):
+    # This runs on Monday morning.
+    if today is None:
+        today = datetime.date.today()
+    wednesday = next_wednesday(today)
 
     page_name = unicode(wednesday.strftime(PAGE_NAME_FORMAT))
-    page_contents = unicode(wednesday.strftime('Updates for the staff call on %Y-%m-%d'))
     
     assert import_from_dir.get_page_contents(site, page_name) is None
     page = wikipedia.Page(site, page_name)
@@ -29,15 +45,13 @@ def create_page(site, dry_run = False):
 
     return page_name
 
-def next_wednesday(today = datetime.date.today()):
+def next_wednesday(today):
     # This runs in the morning.
-    today = datetime.date.today()
     # Spin until we see a Wednesday (day==2)
     wednesday = today
     while wednesday.weekday() != 2:
         wednesday += datetime.timedelta(days=1)
     return wednesday
-
 
 def generate_email(page_name):
     msg = '''Dear CC Staff,
