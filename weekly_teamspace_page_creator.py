@@ -82,7 +82,7 @@ CC Staff Call Bot.
 
 def get_this_weeks_staff_call_page(site):
     # This runs in the morning.
-    wednesday = next_wednesday()
+    wednesday = next_wednesday(datetime.date.today())
     page_name = unicode(wednesday.strftime(PAGE_NAME_FORMAT))
     return import_from_dir.get_page_contents(site, page_name)
 
@@ -122,15 +122,15 @@ def send_to_staff_list(subject, body, dry_run = False):
 
 def main(argv):
     site = wikipedia.getSite()
+    today = datetime.date.today()
+    this_week_wednesday = next_wednesday(today)
     if argv[0] == 'ask_people_to_fill_in_page':
         # This creates the page for the Wednesday ca. 9d in the future
-        today = datetime.date.today()
         next_week = today + datetime.timedelta(days=7)
         create_page(site, today=next_week) # Create next week's page.
 
         # Last week, Jen or Ani could have gone and deleted this week's page.
         # For now, we assume there is no way to cancel a staff call. FIXME.
-        this_week_wednesday = next_wednesday(today)
         this_week_page_name = unicode(this_week_wednesday.strftime(PAGE_NAME_FORMAT))
 
         body = generate_email(this_week_page_name)
@@ -138,7 +138,7 @@ def main(argv):
                            body=body)
     elif argv[0] == 'send_weekly_status_updates':
         body = get_this_weeks_staff_call_page(site)
-        send_to_staff_list(subject=next_wednesday().strftime("Staff updates for call on Wed %Y-%m-%d"),
+        send_to_staff_list(subject=this_week_wednesday.strftime("Staff updates for call on Wed %Y-%m-%d"),
                            body=body)
 
 if __name__ == '__main__':
