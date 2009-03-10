@@ -21,7 +21,7 @@ def new_page_contents(wednesday):
     everyone = staff.list_all_staff(['Staff', 'Science Commons', 'Berlin Office', 'ccLearn'])
     randomized = staff.randomize_staff(everyone)
     formatted = staff.format_random_lists(randomized)
-    page_contents += formatted
+    page_contents += formatted + '\n = Staff Updates\n'
     return page_contents
 
 def create_page(site, today = None, dry_run = False):
