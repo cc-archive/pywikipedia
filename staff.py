@@ -49,7 +49,7 @@ def format_random_lists(random_lists, phone_number_list = None):
             if person == note_taker:
                 person += ' (note-taker)'
             out_lines.append('* ' + person)
-        out_lines.append('')
+        out_lines.append('[[/Group %d notes]]' % (i + 1))
 
     return '\n'.join(out_lines)
 
