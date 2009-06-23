@@ -13,11 +13,7 @@ def list_all_staff(headings = ('Staff',)):
     result = []
 
     for people_list in people_lists:
-        heading_selected = people_list.getprevious()
-        heading_text = heading_selected.text or heading_selected.findtext('*')
-        assert heading_text
-        if heading_text in headings:
-            result.extend([thing.text or thing.findtext('*') for thing in people_list])
+        result.extend([thing.text or thing.findtext('*') for thing in people_list])
 
     assert 'Mike Linksvayer' in result
     return result
