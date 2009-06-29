@@ -106,9 +106,9 @@ def send_to_staff_list(subject, body, dry_run = False):
     msg.add_header('Subject', subject)
     
     SERVER='localhost'
-    FROM='"Mr. Staff Call" <asheesh@creativecommons.org>'
+    FROM='"Mr. Staff Call" <webmaster@creativecommons.org>'
     if dry_run:
-        TO = ['asheesh@creativecommons.org']
+        TO = ['nkinkade@creativecommons.org']
     else:
         TO = ['cc-staff@lists.ibiblio.org']
 
