@@ -18,7 +18,7 @@ def list_all_staff(headings = ('Staff',)):
     assert 'Mike Linksvayer' in result
     return result
 
-def randomize_staff(everyone, n_groups=4, not_on_call_list = None):
+def randomize_staff(everyone, n_groups=0, not_on_call_list = None):
     # FIXME: Handle the people who aren't allowed to be note takers
     if not_on_call_list is None:   
         not_on_call_list = [dude.strip() for dude in open('not-on-call')]
